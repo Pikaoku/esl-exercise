@@ -9,7 +9,6 @@ import './index.css';
 import registerServiceWorker from './registerServiceWorker';
 import reducer from "./store/reducer";
 
-
 const store = createStore(
     reducer,
     composeWithDevTools(
