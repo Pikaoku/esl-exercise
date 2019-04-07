@@ -7,7 +7,7 @@ import thunk from "redux-thunk";
 import App from './app/App';
 import './index.css';
 import registerServiceWorker from './registerServiceWorker';
-import reducer from "./test/store/reducer";
+import reducer from "./store/reducer";
 
 
 const store = createStore(
