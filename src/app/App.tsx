@@ -1,6 +1,7 @@
 import * as React from 'react';
 import Helmet from "react-helmet";
-import './App.css';
+import {BrowserRouter, Route, Switch} from "react-router-dom";
+import LeagueResults from "./leagueResults/LeagueResults";
 
 class App extends React.Component {
     public render() {
@@ -12,14 +13,14 @@ class App extends React.Component {
                           type="image/vnd.microsoft.icon"/>
                     <title>Coding Exercise | ESL Gaming</title>
                 </Helmet>
-                <header className="App-header">
-                    <h1 className="App-title">Welcome to React</h1>
-                </header>
-                <p className="App-intro">
-                    To get started, edit <code>src/App.tsx</code> and save to reload.
-                </p>
+                <BrowserRouter>
+                    <Switch>
+                        <Route exact={true} path={'/'} component={LeagueResults}/>
+                        {/* robots.txt, sitemap etc etc */}
+                    </Switch>
+                </BrowserRouter>
             </div>
-        );
+        )
     }
 }
 

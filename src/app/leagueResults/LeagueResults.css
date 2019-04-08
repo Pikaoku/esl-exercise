@@ -1,0 +1,47 @@
+.lr-frame {
+    padding: 1rem;
+    max-width: 32rem;
+    border: 1px solid green;
+}
+
+.lr-title-container {
+    background-color: white;
+    padding: 0.7rem 0.4rem;
+    border-top: 6px solid mediumseagreen;
+    border-radius: 6px 6px 3px 3px;
+    margin-bottom: 1rem;
+}
+
+.lr-results-container {
+    background-color: white;
+    padding: 0.7rem 0.4rem;
+    border-radius: 3px;
+}
+
+.lr-title-container > h3, .lr-title-container > h2 {
+    margin: 0;
+}
+
+.lr-title {
+    color: #212121;
+}
+
+.lr-subtitle {
+    color: #535353;
+    font-weight: 200;
+}
+
+.lr-select-wrapper {
+    direction: rtl;
+}
+
+.lr-select {
+    direction: ltr;
+    border: 0.5px lightgrey solid;
+    padding: 5px;
+    border-radius: 3px;
+}
+
+.center-text {
+    text-align: center;
+}
