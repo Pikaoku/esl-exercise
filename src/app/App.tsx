@@ -3,7 +3,7 @@ import Helmet from "react-helmet";
 import {BrowserRouter, Route, Switch} from "react-router-dom";
 import LeagueResults from "./leagueResults/LeagueResults";
 
-class App extends React.Component {
+export class App extends React.Component {
     public render() {
         return (
             <div className="App">

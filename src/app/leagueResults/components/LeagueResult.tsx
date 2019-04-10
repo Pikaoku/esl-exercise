@@ -1,11 +1,11 @@
 import * as React from "react";
 
-interface ILeagueResultProps {
+interface LeagueResultProps {
     result: object
 }
 
-const LeagueResult: React.StatelessComponent<ILeagueResultProps> =
-    ({result}: ILeagueResultProps) => (
+const LeagueResult: React.StatelessComponent<LeagueResultProps> =
+    ({result}: LeagueResultProps) => (
         <div>
             Hello there
         </div>
