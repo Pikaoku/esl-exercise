@@ -1,14 +1,22 @@
 import axios from 'axios'
+import {Dispatch} from 'redux';
 import {
-    ESL_API_LEAGUES, ESL_API_LEAGUES_CONTESTANTS, ESL_API_LEAGUES_RESULTS, FETCH_LEAGUE_BEGIN,
-    FETCH_LEAGUE_CONTESTANTS_BEGIN, FETCH_LEAGUE_CONTESTANTS_FAILURE, FETCH_LEAGUE_CONTESTANTS_SUCCESS,
+    ESL_API_LEAGUES,
+    ESL_API_LEAGUES_CONTESTANTS,
+    ESL_API_LEAGUES_RESULTS,
+    FETCH_LEAGUE_BEGIN,
+    FETCH_LEAGUE_CONTESTANTS_BEGIN,
+    FETCH_LEAGUE_CONTESTANTS_FAILURE,
+    FETCH_LEAGUE_CONTESTANTS_SUCCESS,
     FETCH_LEAGUE_FAILURE,
-    FETCH_LEAGUE_RESULTS_BEGIN, FETCH_LEAGUE_RESULTS_FAILURE, FETCH_LEAGUE_RESULTS_SUCCESS,
+    FETCH_LEAGUE_RESULTS_BEGIN,
+    FETCH_LEAGUE_RESULTS_FAILURE,
+    FETCH_LEAGUE_RESULTS_SUCCESS,
     FETCH_LEAGUE_SUCCESS
 } from "./leagueTypes";
 
 export function fetchLeague(id: number) {
-    return (dispatch, getState) => {
+    return (dispatch: Dispatch) => {
         const apiRecord = ESL_API_LEAGUES + id.toString();
         dispatch({type: FETCH_LEAGUE_BEGIN, payload: {id}});
         return axios.get(apiRecord)
@@ -18,12 +26,13 @@ export function fetchLeague(id: number) {
                         payload: {data: successResponse.data, id},
                         type: FETCH_LEAGUE_SUCCESS
                     });
-                    dispatch(fetchLeagueResults(id));
-                    dispatch(fetchLeagueContestants(id));
+                    // For the purposes of this exercise, auto-hydrate the League as we need all of it.
+                    dispatch<any>(fetchLeagueResults(id));
+                    dispatch<any>(fetchLeagueContestants(id));
                 },
                 error =>
                     dispatch({
-                        payload: {error, id},
+                        payload: {error: error.message, id},
                         type: FETCH_LEAGUE_FAILURE
                     })
             )
@@ -51,7 +60,7 @@ export function fetchLeagueContestants(id: number) {
 }
 
 function hydrateLeague(begin: string, success: string, failure: string, endpoint: string, id: number) {
-    return (dispatch, getState) => {
+    return (dispatch: Dispatch) => {
         const apiRecord = ESL_API_LEAGUES + id.toString();
         dispatch({type: begin});
         return axios.get(apiRecord + endpoint)
@@ -64,7 +73,7 @@ function hydrateLeague(begin: string, success: string, failure: string, endpoint
                 ),
                 error => (
                     dispatch({
-                        payload: {error, id},
+                        payload: {error: error.message, id},
                         type: failure
                     })
                 )

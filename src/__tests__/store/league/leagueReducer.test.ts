@@ -1,5 +1,8 @@
 import {
-    defaultLeagueObject, FETCH_LEAGUE_BEGIN, FETCH_LEAGUE_CONTESTANTS_SUCCESS, FETCH_LEAGUE_RESULTS_SUCCESS,
+    defaultLeagueObject,
+    FETCH_LEAGUE_BEGIN,
+    FETCH_LEAGUE_CONTESTANTS_SUCCESS,
+    FETCH_LEAGUE_RESULTS_SUCCESS,
     FETCH_LEAGUE_SUCCESS
 } from "../../../store/league/leagueTypes";
 import reducer from "../../../store/reducer";
@@ -20,8 +23,8 @@ describe('fetch league begin reducer', () => {
     ));
 
     const testFetchLeagueAction = {type: FETCH_LEAGUE_BEGIN, payload: {id: 1}};
-    it('should add an array element when a request is made', () => (
-        expect(reducer(undefined, testFetchLeagueAction).league.leagues[1].id).toEqual(1)
+    it('should add a league when a request is made', () => (
+        expect(reducer(undefined, testFetchLeagueAction).league.leagues[1].id).toEqual('1')
     ));
 
     it('should set default fetching to true and fetched to false', () => {
@@ -61,25 +64,27 @@ describe('fetch league begin reducer', () => {
     });
 
     it('should populate results and contestants on successful fetches', () => {
-        let exampleData = {id: 12483838, seed: 0, status: 'signedUp', alias: 12483838, name: 'Epic Pwners'};
+        const exampleResultsData = {id: 12483838, seed: 0, status: 'signedUp', alias: 12483838, name: 'Epic Pwners'};
         expect(reducer(
-            // establish state as it would be following a FETCH_LEAGUE_BEGIN
             testState,
-            // Action to be tested
             {
-                payload: {data: exampleData, id: 17701},
+                payload: {data: exampleResultsData, id: 17701},
                 type: FETCH_LEAGUE_RESULTS_SUCCESS
             }
-        ).league.leagues['17701'].results).toEqual(exampleData);
-        exampleData = {id: 363663636633, state: 'closed', bracket: 1, round: 1, beginAt: '2018-06-29T17:00:00:000Z'}
+        ).league.leagues['17701'].results).toEqual(exampleResultsData);
+        const exampleContestantsData = {
+            beginAt: '2018-06-29T17:00:00:000Z',
+            bracket: 1,
+            id: 363663636633,
+            round: 1,
+            state: 'closed'
+        };
         expect(reducer(
-            // establish state as it would be following a FETCH_LEAGUE_BEGIN
             testState,
-            // Action to be tested
             {
-                payload: {data: exampleData, id: 17701},
+                payload: {data: exampleContestantsData, id: 17701},
                 type: FETCH_LEAGUE_CONTESTANTS_SUCCESS
             }
-        ).league.leagues['17701'].contestants).toEqual(exampleData);
+        ).league.leagues['17701'].contestants).toEqual(exampleContestantsData);
     })
 });

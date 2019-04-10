@@ -1,4 +1,4 @@
-export const FETCH_LEAGUE_BEGIN = 'fetch league';
+export const FETCH_LEAGUE_BEGIN = 'fetch league begin';
 export const FETCH_LEAGUE_RESULTS_BEGIN = 'fetch league results begin';
 export const FETCH_LEAGUE_CONTESTANTS_BEGIN = 'fetch league contestants begin';
 export const FETCH_LEAGUE_SUCCESS = 'fetch league success';
@@ -13,9 +13,9 @@ export const ESL_API_LEAGUES = ESL_API_BASE + 'leagues/';
 export const ESL_API_LEAGUES_RESULTS = '/results';
 export const ESL_API_LEAGUES_CONTESTANTS = '/contestants';
 
-interface FetchLeagueAction {
-    type: typeof FETCH_LEAGUE_BEGIN,
-    id: number
+export interface LeagueReducerAction {
+    type: string,
+    payload: any
 }
 
 export function defaultLeagueObject(id: number) {
@@ -29,5 +29,3 @@ export function defaultLeagueObject(id: number) {
         results: {}
     }
 }
-
-export type LeagueActionTypes = FetchLeagueAction
