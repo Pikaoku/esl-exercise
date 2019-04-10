@@ -36,7 +36,7 @@ describe('fetch league begin reducer', () => {
         expect(reducer(undefined, testFetchLeagueAction).league.leagues['1'].data).toEqual({});
         expect(reducer(undefined, testFetchLeagueAction).league.leagues['1'].contestants).toEqual({});
         expect(reducer(undefined, testFetchLeagueAction).league.leagues['1'].results).toEqual({});
-        expect(reducer(undefined, testFetchLeagueAction).league.leagues['1'].error).toEqual(null);
+        expect(reducer(undefined, testFetchLeagueAction).league.leagues['1'].error).toEqual('');
     });
 
     it('should not duplicate leagues', () => (
@@ -46,10 +46,10 @@ describe('fetch league begin reducer', () => {
     const testState = {
         league: {
             leagues: {
-                '17701': defaultLeagueObject(17701)
+                '17701': defaultLeagueObject('17701')
             }
         }
-    }
+    };
     it('should populate league data on success', () => {
         const exampleData = {id: 17701, type: 'cup', contestantType: 'team', state: 'finished', prizePool: null};
         expect(reducer(
