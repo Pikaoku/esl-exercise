@@ -30,7 +30,7 @@ class LeagueResults extends Component<Props, State> {
 
     public componentDidMount() {
         // This usually would come from the URL or the container of this component
-        this.props.fetchLeague('177161');
+        this.props.fetchLeague('177161'); // Load exercise example league
     }
 
     public render() {
