@@ -20,23 +20,23 @@ export interface LeagueReducerAction {
 }
 
 export interface League {
-    contestants: any,
+    contestants: any[],
     data: any,
     error: string,
     fetched: boolean,
     fetching: boolean,
     id: string,
-    results: any
+    results: any[]
 }
 
 export function defaultLeagueObject(id: string): League {
     return {
-        contestants: {},
+        contestants: [],
         data: {},
         error: '',
         fetched: false,
         fetching: true,
         id,
-        results: {}
+        results: []
     }
 }

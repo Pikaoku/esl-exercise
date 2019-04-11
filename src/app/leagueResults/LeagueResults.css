@@ -6,50 +6,50 @@
 
 .lr-title-container {
     background-color: white;
-    padding: 0.7rem 0.4rem;
+    padding: 0.7rem 25px;
     border-top: 6px solid mediumseagreen;
     border-radius: 6px 6px 3px 3px;
     margin-bottom: 1rem;
     margin-top: 1rem;
 }
 
-.lr-title-container > h3, .lr-title-container > h2 {
-    margin: 0;
-}
-
 .lr-title {
-    color: #212121;
+    margin: 0;
+    font-size: 22px;
+    font-weight: bold;
+    color: #2a2a2a;;
 }
 
 .lr-subtitle {
+    margin: 0;
     color: #535353;
     font-weight: 200;
+    font-size: 14px;
 }
 
 .lr-results-container {
     background-color: white;
-    padding: 0.7rem 0.4rem;
     border-radius: 3px;
-    height: 400px;
+    min-height: 200px;
 }
 
 .lr-button {
     direction: ltr;
     -webkit-appearance: none;
     -moz-appearance: none;
-    color: #343434;
+    color: #2E2E2E;
     background-color: white;
     border: 1px lightgrey solid;
     padding: 5px;
     border-radius: 3px;
-    float: right
+    float: right;
+    margin: 15px 25px 0 0;
 }
 
 .lr-button-wrapper::after {
     content: "";
     clear: both;
     display: table;
-    padding-right: 10px;
 }
 
 .arrow {
@@ -57,7 +57,7 @@
     height: 0;
     border-left: 5px solid transparent;
     border-right: 5px solid transparent;
-    border-bottom: 5px solid #343434;
+    border-bottom: 5px solid #2a2a2a;
     display: inline-block;
     margin-left: 3px;
     margin-bottom: 1.5px;
@@ -69,4 +69,25 @@
 
 .center-text {
     text-align: center;
+}
+
+.league-result {
+    padding: 0 25px;
+    border-bottom: #ddd 1px solid;
+}
+
+.winner, .loser {
+    border-left: 3px solid;
+    border-radius: 2px;
+    padding-left: 10px;
+    margin: 10px 0;
+    color: #2a2a2a;
+}
+
+.winner {
+    border-color: #27AE5D;
+}
+
+.loser {
+    border-color: #E02C19;
 }

@@ -25,8 +25,6 @@ export function fetchLeague(id: string) {
         return leaguesApi.get(id)
             .then(
                 successResponse => {
-                    // tslint:disable-next-line:no-console
-                    console.log('success', successResponse);
                     dispatch<any>({
                         payload: {data: successResponse.data, id},
                         type: FETCH_LEAGUE_SUCCESS

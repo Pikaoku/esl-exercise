@@ -1,6 +1,7 @@
 import * as React from 'react';
 import Helmet from "react-helmet";
 import {BrowserRouter, Route, Switch} from "react-router-dom";
+import './App.css';
 import LeagueResults from "./leagueResults/LeagueResults";
 
 export class App extends React.Component {

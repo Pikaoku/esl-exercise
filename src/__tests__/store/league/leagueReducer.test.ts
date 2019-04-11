@@ -34,8 +34,8 @@ describe('fetch league begin reducer', () => {
 
     it('should set default objects for async-retrieved league data', () => {
         expect(reducer(undefined, testFetchLeagueAction).league.leagues['1'].data).toEqual({});
-        expect(reducer(undefined, testFetchLeagueAction).league.leagues['1'].contestants).toEqual({});
-        expect(reducer(undefined, testFetchLeagueAction).league.leagues['1'].results).toEqual({});
+        expect(reducer(undefined, testFetchLeagueAction).league.leagues['1'].contestants).toEqual([]);
+        expect(reducer(undefined, testFetchLeagueAction).league.leagues['1'].results).toEqual([]);
         expect(reducer(undefined, testFetchLeagueAction).league.leagues['1'].error).toEqual('');
     });
 
