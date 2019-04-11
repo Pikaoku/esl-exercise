@@ -19,7 +19,6 @@ interface State {
 
 class LeagueResults extends Component<Props, State> {
     private leagueIdInput: RefObject<HTMLInputElement> = createRef<HTMLInputElement>();
-
     constructor(props: Props) {
         super(props);
         this.state = {
@@ -35,28 +34,34 @@ class LeagueResults extends Component<Props, State> {
     }
 
     public render() {
-        const { id } = this.state;
-        const { leagues } = this.props;
-        const league: League = leagues[id];
+        // Variables
+        const { id, ascending } = this.state
+        const { leagues } = this.props
+        const league: League = leagues[id]
 
+        // Provide feedback if we're still waiting on api calls
         if (typeof league === 'undefined' || league.fetched === false) {
-            return (
-                <div>
-                    Loading...
-                </div>
-            )
+            return (<div>Loading...</div>)
         }
 
+        // Prepare data for display
         const title: string = league.data.name.short;
-        const dateRaw: Date = new Date(league.data.timeline.inProgress.begin);
-        const dateOptions = { day: 'numeric', month: 'long', year: 'numeric' };
-        const date: string = dateRaw.toLocaleDateString('en-us', dateOptions);
+        const dateRaw: Date = new Date(league.data.timeline.inProgress.begin)
+        const dateOptions = { day: 'numeric', month: 'long', year: 'numeric' }
+        const date: string = dateRaw.toLocaleDateString('en-us', dateOptions)
+        const flipAscending = () => this.setState({ 'ascending': !ascending })
+        // Used to sort results before iterating upon the array
+        const getTime = (input: string): number => (new Date(input)).getTime()
+        const sortByTime =
+            (x: any, y: any): number =>
+                ascending ? getTime(x.beginAt) - getTime(y.beginAt) : getTime(y.beginAt) - getTime(x.beginAt)
 
+        // Handle more complicated data for display
         const displayLeagueResult = (result: any) => {
             // Winner first, loser second. 
             const sortedParticipants: any[] = result.participants.sort((x: any, y: any) => x.place - y.place);
             const time: string =
-                (new Date(result.beginAt)).toLocaleTimeString('en-US', { hour12: true, hour: 'numeric', minute: 'numeric' })
+                (new Date(result.beginAt)).toLocaleTimeString('it', { hour: 'numeric', minute: 'numeric' })
             const getParticipantName = (pid: number): string => league.contestants.find((x: any) => x.id === pid).name;
             const getParticipantPoints = (participant: any): string => participant.points[0]
             const winner: any = sortedParticipants[0];
@@ -81,13 +86,13 @@ class LeagueResults extends Component<Props, State> {
                 <LeagueResultsTitle title={title} date={date} />
                 <div className="lr-results-container">
                     <div className="lr-button-wrapper">
-                        <button className="lr-button">Date
-                            <div className="arrow" />
+                        <button className="lr-button" onClick={flipAscending}>
+                            Date <div className={"arrow " + (ascending ? 'ascending' : '')} />
                         </button>
                     </div>
                     {
-                        (league.results.length > 0 && league.contestants.length > 0)
-                            ? league.results.map(displayLeagueResult)
+                        league.results.length > 0 && league.contestants.length > 0
+                            ? league.results.sort(sortByTime).map(displayLeagueResult)
                             : <div className={'center-text'}>Results Loading...</div>
                     }
                 </div>

@@ -1,7 +1,6 @@
 .lr-frame {
     padding: 1rem;
     max-width: 32rem;
-    border: 1px solid green;
 }
 
 .lr-title-container {
@@ -63,7 +62,7 @@
     margin-bottom: 1.5px;
 }
 
-.ascending > .arrow {
+.arrow.ascending {
     transform: rotate(180deg);
 }
 
@@ -72,7 +71,7 @@
 }
 
 .league-result {
-    padding: 0 25px;
+    padding: 15px 25px 0;
     border-bottom: #ddd 1px solid;
 }
 
