@@ -3,9 +3,9 @@ import {
     FETCH_LEAGUE_BEGIN,
     FETCH_LEAGUE_CONTESTANTS_SUCCESS,
     FETCH_LEAGUE_RESULTS_SUCCESS,
-    FETCH_LEAGUE_SUCCESS
-} from "../../../store/league/leagueTypes";
-import reducer from "../../../store/reducer";
+    FETCH_LEAGUE_SUCCESS,
+} from '../../../app/leagueResults/constants'
+import reducer from '../../../store/reducer'
 
 describe('leagues reducer', () => (
     it('should return default state', () => {

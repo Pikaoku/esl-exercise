@@ -1,15 +1,16 @@
 import axios from 'axios'
 import MockAdapter from 'axios-mock-adapter'
-import configureStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
-import {fetchLeague} from "../../../store/league/leagueActions";
+import configureStore from 'redux-mock-store'
+import thunk from 'redux-thunk'
+
 import {
     FETCH_LEAGUE_BEGIN,
     FETCH_LEAGUE_CONTESTANTS_BEGIN,
     FETCH_LEAGUE_FAILURE,
     FETCH_LEAGUE_RESULTS_BEGIN,
-    FETCH_LEAGUE_SUCCESS
-} from "../../../store/league/leagueTypes";
+    FETCH_LEAGUE_SUCCESS,
+} from '../../../app/leagueResults/constants'
+import { fetchLeague } from '../../../store/league/leagueActions'
 
 // Stop axios going off and making requests
 const mockedAxios = new MockAdapter(axios);

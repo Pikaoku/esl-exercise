@@ -1,5 +1,6 @@
 import axios from 'axios'
-import {Dispatch} from 'redux';
+import { Dispatch } from 'redux'
+
 import {
     ESL_API_LEAGUES,
     ESL_API_LEAGUES_CONTESTANTS,
@@ -12,8 +13,13 @@ import {
     FETCH_LEAGUE_RESULTS_BEGIN,
     FETCH_LEAGUE_RESULTS_FAILURE,
     FETCH_LEAGUE_RESULTS_SUCCESS,
-    FETCH_LEAGUE_SUCCESS
-} from "./leagueTypes";
+    FETCH_LEAGUE_SUCCESS,
+} from '../../app/leagueResults/constants'
+
+export interface LeagueReducerAction {
+    type: string,
+    payload: any
+}
 
 const leaguesApi = axios.create({
     baseURL: ESL_API_LEAGUES
@@ -21,11 +27,11 @@ const leaguesApi = axios.create({
 
 export function fetchLeague(id: string) {
     return (dispatch: Dispatch) => {
-        dispatch({type: FETCH_LEAGUE_BEGIN, payload: {id}});
+        dispatch<LeagueReducerAction>({type: FETCH_LEAGUE_BEGIN, payload: {id}});
         return leaguesApi.get(id)
             .then(
                 successResponse => {
-                    dispatch<any>({
+                    dispatch<LeagueReducerAction>({
                         payload: {data: successResponse.data, id},
                         type: FETCH_LEAGUE_SUCCESS
                     });
@@ -36,7 +42,7 @@ export function fetchLeague(id: string) {
             )
             .catch(
                 error =>
-                    dispatch({
+                    dispatch<LeagueReducerAction>({
                         payload: {error: error.message, id},
                         type: FETCH_LEAGUE_FAILURE
                     })
@@ -66,17 +72,17 @@ export function fetchLeagueContestants(id: string) {
 
 function hydrateLeague(begin: string, success: string, failure: string, endpoint: string, id: string) {
     return (dispatch: Dispatch) => {
-        dispatch({type: begin, payload: {id}});
+        dispatch<LeagueReducerAction>({type: begin, payload: {id}});
         return leaguesApi.get(id + endpoint)
             .then(
                 successResponse => (
-                    dispatch({
+                    dispatch<LeagueReducerAction>({
                         payload: {data: successResponse.data, id},
                         type: success,
                     })
                 ),
                 error => (
-                    dispatch({
+                    dispatch<LeagueReducerAction>({
                         payload: {error: error.message, id},
                         type: failure
                     })

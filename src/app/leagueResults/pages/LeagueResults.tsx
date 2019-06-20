@@ -1,11 +1,12 @@
-import * as React from 'react';
-import { Component, createRef, RefObject } from 'react';
-import { connect } from 'react-redux';
-import { fetchLeague } from "../../store/league/leagueActions";
-import { League } from "../../store/league/leagueTypes";
-import LeagueResult from './components/LeagueResult';
-import LeagueResultsTitle from "./components/LeagueResultsTitle";
-import './LeagueResults.css';
+import './LeagueResults.css'
+
+import * as React from 'react'
+import { Component, createRef, RefObject } from 'react'
+import { connect } from 'react-redux'
+
+import { fetchLeague } from '../../../store/league/leagueActions'
+import LeagueResult from '../components/LeagueResult'
+import LeagueResultsTitle from '../components/LeagueResultsTitle'
 
 interface Props {
     fetchLeague: (id: string) => Promise<void>,

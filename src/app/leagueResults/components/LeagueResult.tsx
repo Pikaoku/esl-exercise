@@ -1,4 +1,4 @@
-import * as React from "react";
+import * as React from 'react'
 
 interface Props {
     time: string,
@@ -8,7 +8,7 @@ interface Props {
     loserScore: string
 }
 
-const LeagueResult: React.StatelessComponent<Props> =
+const LeagueResult: React.FC<Props> =
     ({ time, winner, winnerScore, loser, loserScore}: Props) => (
         <div className={'league-result'}>
             <div className={'faded small-text'}>{time}</div>
