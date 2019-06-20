@@ -1,5 +1,6 @@
-import {combineReducers} from "redux";
-import leagueReducer from "./league/leagueReducer";
+import { combineReducers } from 'redux'
+
+import leagueReducer from './league/leagueReducer'
 
 const reducer = combineReducers({
     league: leagueReducer
