@@ -6,15 +6,13 @@ import {
     ESL_API_LEAGUES_CONTESTANTS,
     ESL_API_LEAGUES_RESULTS,
     FETCH_LEAGUE_BEGIN,
-    FETCH_LEAGUE_CONTESTANTS_BEGIN,
     FETCH_LEAGUE_CONTESTANTS_FAILURE,
     FETCH_LEAGUE_CONTESTANTS_SUCCESS,
     FETCH_LEAGUE_FAILURE,
-    FETCH_LEAGUE_RESULTS_BEGIN,
     FETCH_LEAGUE_RESULTS_FAILURE,
     FETCH_LEAGUE_RESULTS_SUCCESS,
     FETCH_LEAGUE_SUCCESS,
-} from '../../app/leagueResults/constants'
+} from '../../app/league/constants'
 
 export interface LeagueReducerAction {
     type: string,
@@ -25,70 +23,61 @@ const leaguesApi = axios.create({
     baseURL: ESL_API_LEAGUES
 });
 
-export function fetchLeague(id: string) {
+export function fetchLeague(id: number) {
     return (dispatch: Dispatch) => {
-        dispatch<LeagueReducerAction>({type: FETCH_LEAGUE_BEGIN, payload: {id}});
-        return leaguesApi.get(id)
-            .then(
-                successResponse => {
-                    dispatch<LeagueReducerAction>({
-                        payload: {data: successResponse.data, id},
-                        type: FETCH_LEAGUE_SUCCESS
-                    });
-                    // For the purposes of this exercise, auto-hydrate the League as we need all of it.
-                    dispatch<any>(fetchLeagueResults(id));
-                    dispatch<any>(fetchLeagueContestants(id));
-                }
-            )
-            .catch(
-                error =>
-                    dispatch<LeagueReducerAction>({
-                        payload: {error: error.message, id},
-                        type: FETCH_LEAGUE_FAILURE
-                    })
-            )
+        dispatch<LeagueReducerAction>({ type: FETCH_LEAGUE_BEGIN, payload: { leagueId: id } });
+        getLeague(id)
+        getLeagueContestants(id)
+        getLeagueResults(id)
     }
 }
 
-export function fetchLeagueResults(id: string) {
-    return hydrateLeague(
-        FETCH_LEAGUE_RESULTS_BEGIN,
-        FETCH_LEAGUE_RESULTS_SUCCESS,
-        FETCH_LEAGUE_RESULTS_FAILURE,
+function getLeague(id: number) {
+    getLeagueChild(
+        id,
+        'league',
+        '',
+        FETCH_LEAGUE_SUCCESS,
+        FETCH_LEAGUE_FAILURE
+    )
+}
+
+function getLeagueResults(id: number) {
+    getLeagueChild(
+        id,
+        'leagueResult',
         ESL_API_LEAGUES_RESULTS,
-        id
+        FETCH_LEAGUE_RESULTS_SUCCESS,
+        FETCH_LEAGUE_RESULTS_FAILURE
     )
 }
 
-export function fetchLeagueContestants(id: string) {
-    return hydrateLeague(
-        FETCH_LEAGUE_CONTESTANTS_BEGIN,
-        FETCH_LEAGUE_CONTESTANTS_SUCCESS,
-        FETCH_LEAGUE_CONTESTANTS_FAILURE,
+function getLeagueContestants(id: number) {
+    getLeagueChild(
+        id,
+        'leagueContestant',
         ESL_API_LEAGUES_CONTESTANTS,
-        id
+        FETCH_LEAGUE_CONTESTANTS_SUCCESS,
+        FETCH_LEAGUE_CONTESTANTS_FAILURE
     )
 }
 
-function hydrateLeague(begin: string, success: string, failure: string, endpoint: string, id: string) {
-    return (dispatch: Dispatch) => {
-        dispatch<LeagueReducerAction>({type: begin, payload: {id}});
-        return leaguesApi.get(id + endpoint)
+function getLeagueChild(id: number, field: string, endpoint: string, successType: string, failureType: string) {
+    return (dispatch: Dispatch) =>
+        leaguesApi.get(id + endpoint)
             .then(
-                successResponse => (
-                    dispatch<LeagueReducerAction>({
-                        payload: {data: successResponse.data, id},
-                        type: success,
-                    })
-                ),
-                error => (
-                    dispatch<LeagueReducerAction>({
-                        payload: {error: error.message, id},
-                        type: failure
-                    })
-                )
+                success => dispatch({
+                    payload: {
+                        leagueId: id,
+                        [field]: success.data
+                    },
+                    type: successType,
+                }),
+                error => dispatch({
+                    payload: {
+                        error: error.message
+                    },
+                    type: failureType
+                })
             )
-    }
 }
-
-

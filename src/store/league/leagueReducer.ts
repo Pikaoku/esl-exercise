@@ -1,63 +1,56 @@
 import {
     FETCH_LEAGUE_BEGIN,
-    FETCH_LEAGUE_CONTESTANTS_BEGIN,
     FETCH_LEAGUE_CONTESTANTS_FAILURE,
     FETCH_LEAGUE_CONTESTANTS_SUCCESS,
     FETCH_LEAGUE_FAILURE,
-    FETCH_LEAGUE_RESULTS_BEGIN,
     FETCH_LEAGUE_RESULTS_FAILURE,
     FETCH_LEAGUE_RESULTS_SUCCESS,
     FETCH_LEAGUE_SUCCESS,
-} from '../../app/leagueResults/constants'
-import LeagueEntity from '../../app/leagueResults/entities/LeagueEntity'
+} from '../../app/league/constants'
+import LeagueEntity from '../../app/league/entities/LeagueEntity'
+import LeagueResultEntity from '../../app/league/entities/LeagueResultEntity'
+import { LeagueReducerAction } from './leagueActions'
 
-interface LeagueReducerState {
-    leagues: LeagueEntity[]
+
+export interface LeagueReducerState {
+    error: null | string,
+    fetched: boolean,
+    fetching: boolean,
+    league: LeagueEntity | null,
+    leagueContestant: LeagueContestantEntity | null,
+    leagueId: number | null,
+    leagueResult: LeagueResultEntity | null,
 }
 
 const initialState = {
-    leagues: {}
+    error: null,
+    fetched: false,
+    fetching: false,
+    league: null,
+    leagueContestant: null,
+    leagueId: null,
+    leagueResult: null,
 };
 
-const leagueReducer = (state: LeagueReducerState = initialState, action: LeagueReducerAction) => {
-    const id = action.payload ? action.payload.id.toString() : null;
-    // Helper method to keep code cleaner.
-    const updateLeague = (updatedId: string, updatedLeague: object) => ({
-        ...state, leagues: { ...state.leagues, [updatedId]: updatedLeague }
-    });
+const leagueReducer = (state: LeagueReducerState = initialState, { type, payload }: LeagueReducerAction) => {
+    const addToState = (field: string) => {
+        const fetched = (state.league || payload.league) && (state.leagueResult || payload.leagueResult) && (state.leagueContestant || payload.leagueContestant)
+        return state.leagueId === payload.leagueId ? { ...state, ...payload, fetched, fetching: !fetched } : state
+    }
 
-    switch (action.type) {
+    switch (type) {
         case FETCH_LEAGUE_BEGIN:
-            const leagueBeingFetched = state.leagues.hasOwnProperty(id)
-                ? { ...state.leagues[id], fetching: true, fetched: false }
-                : defaultLeagueObject(id);
-            return updateLeague(id, leagueBeingFetched);
-
+            return { ...initialState, league: false, fetching: true, leagueId: payload.leagueId }
         case FETCH_LEAGUE_SUCCESS:
-            const fetchedLeague = { ...state.leagues[id], fetched: true, fetching: false, data: action.payload.data };
-            return updateLeague(id, fetchedLeague);
-
-        case FETCH_LEAGUE_FAILURE:
-            return state;
-
-        case FETCH_LEAGUE_RESULTS_BEGIN:
-            return state;
-
+            return addToState('league')
         case FETCH_LEAGUE_RESULTS_SUCCESS:
-            return updateLeague(id, { ...state.leagues[id], results: action.payload.data });
-
-        case FETCH_LEAGUE_RESULTS_FAILURE:
-            return state;
-
-        case FETCH_LEAGUE_CONTESTANTS_BEGIN:
-            return state;
-
+            return addToState('leagueResult')
         case FETCH_LEAGUE_CONTESTANTS_SUCCESS:
-            return updateLeague(id, { ...state.leagues[id], contestants: action.payload.data });
-
+            return addToState('leagueContestant')
+        case FETCH_LEAGUE_FAILURE:
+        case FETCH_LEAGUE_RESULTS_FAILURE:
         case FETCH_LEAGUE_CONTESTANTS_FAILURE:
-            return state;
-
+            return { ...initialState, error: payload.error }
         default:
             return state;
     }
