@@ -3,13 +3,7 @@ import MockAdapter from 'axios-mock-adapter'
 import configureStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
 
-import {
-    FETCH_LEAGUE_BEGIN,
-    FETCH_LEAGUE_CONTESTANTS_BEGIN,
-    FETCH_LEAGUE_FAILURE,
-    FETCH_LEAGUE_RESULTS_BEGIN,
-    FETCH_LEAGUE_SUCCESS,
-} from '../../../app/leagueResults/constants'
+import { FETCH_LEAGUE_BEGIN, FETCH_LEAGUE_FAILURE, FETCH_LEAGUE_SUCCESS } from '../../../app/league/constants'
 import { fetchLeague } from '../../../store/league/leagueActions'
 
 // Stop axios going off and making requests
@@ -17,7 +11,7 @@ const mockedAxios = new MockAdapter(axios);
 const mockStore = configureStore([thunk]);
 
 describe('fetch league action', () => {
-    const randomId = Math.floor(Math.random() * 10).toString();
+    const randomId = Math.floor(Math.random() * 10);
 
     afterEach(() => {
         mockedAxios.reset();
@@ -32,53 +26,27 @@ describe('fetch league action', () => {
     });
 
     it('should hydrate league on success', () => {
-        const store = mockStore({leagues: []});
+        const store = mockStore({ leagues: [] });
         const exampleName = 'DoD:S 6on6 Winter Regional Cup #1 : Playdown';
-        mockedAxios.onGet().reply(200, {name: exampleName});
+        mockedAxios.onGet().reply(200, { name: exampleName });
         store.dispatch<any>(fetchLeague(randomId)).then(
             () => {
                 const successAction = store.getActions().find(action => action.type === FETCH_LEAGUE_SUCCESS);
                 expect(successAction).toBeTruthy();
-                expect(successAction.payload.id).toEqual(randomId);
-                expect(successAction.payload.data.name).toEqual(exampleName);
+                expect(successAction.payload.leagueId).toEqual(randomId);
+                expect(successAction.payload.league.name).toEqual(exampleName);
             }
         );
     });
 
     it('should dispatch a fetch league failure action on rejection', () => {
-        const store = mockStore({leagues: []});
+        const store = mockStore({ leagues: [] });
         mockedAxios.onGet().reply(404);
         store.dispatch<any>(fetchLeague(randomId)).then(
             () => {
                 const failureAction = store.getActions().find(action => action.type === FETCH_LEAGUE_FAILURE);
                 expect(failureAction).toBeDefined();
                 expect(failureAction.payload.error).toBeTruthy();
-                expect(failureAction.payload.id).toEqual(randomId);
-            }
-        );
-    });
-
-    it('should hydrate league results and contestants', () => {
-        const store = mockStore({leagues: []});
-        mockedAxios.onGet().reply(200, {data: 'data', loads: 'of data'});
-        store.dispatch<any>(fetchLeague(randomId)).then(
-            () => {
-                expect(store.getActions().find(action => action.type === FETCH_LEAGUE_RESULTS_BEGIN))
-                    .toBeDefined();
-                expect(store.getActions().find(action => action.type === FETCH_LEAGUE_CONTESTANTS_BEGIN))
-                    .toBeDefined();
-            }
-        );
-    });
-
-    it('should not attempt hydration if the initial league get fails', () => {
-        const store = mockStore({leagues: []});
-        mockedAxios.onGet().reply(500);
-        store.dispatch<any>(fetchLeague(randomId)).then(
-            () => {
-                const actions = store.getActions();
-                expect(actions.find(action => action.type === FETCH_LEAGUE_RESULTS_BEGIN)).toBeUndefined();
-                expect(actions.find(action => action.type === FETCH_LEAGUE_CONTESTANTS_BEGIN)).toBeUndefined();
             }
         );
     })
