@@ -7,13 +7,13 @@ class LeagueNameEntity {
 }
 
 class LeagueTimelineEntityEntity {
-    public state: Date
+    public begin: Date
     public end: Date
     constructor(
-        start: string,
+        begin: string,
         end: string
     ) {
-        this.state = new Date(start)
+        this.begin = new Date(begin)
         this.end = new Date(end)
     }
 }

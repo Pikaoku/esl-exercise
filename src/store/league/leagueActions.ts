@@ -45,7 +45,7 @@ function getLeague(id: number) {
 function getLeagueResults(id: number) {
     getLeagueChild(
         id,
-        'leagueResult',
+        'leagueResults',
         ESL_API_LEAGUES_RESULTS,
         FETCH_LEAGUE_RESULTS_SUCCESS,
         FETCH_LEAGUE_RESULTS_FAILURE
@@ -55,7 +55,7 @@ function getLeagueResults(id: number) {
 function getLeagueContestants(id: number) {
     getLeagueChild(
         id,
-        'leagueContestant',
+        'leagueContestants',
         ESL_API_LEAGUES_CONTESTANTS,
         FETCH_LEAGUE_CONTESTANTS_SUCCESS,
         FETCH_LEAGUE_CONTESTANTS_FAILURE

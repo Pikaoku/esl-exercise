@@ -17,9 +17,9 @@ export interface LeagueReducerState {
     fetched: boolean,
     fetching: boolean,
     league: LeagueEntity | null,
-    leagueContestant: LeagueContestantEntity | null,
+    leagueContestants: LeagueContestantEntity[],
     leagueId: number | null,
-    leagueResult: LeagueResultEntity | null,
+    leagueResults: LeagueResultEntity[],
 }
 
 const initialState = {
@@ -27,14 +27,14 @@ const initialState = {
     fetched: false,
     fetching: false,
     league: null,
-    leagueContestant: null,
+    leagueContestants: [],
     leagueId: null,
-    leagueResult: null,
+    leagueResults: [],
 };
 
 const leagueReducer = (state: LeagueReducerState = initialState, { type, payload }: LeagueReducerAction) => {
-    const addToState = (field: string) => {
-        const fetched = (state.league || payload.league) && (state.leagueResult || payload.leagueResult) && (state.leagueContestant || payload.leagueContestant)
+    const updateState = () => {
+        const fetched = (state.league || payload.league) && (state.leagueResults || payload.leagueResult) && (state.leagueContestants || payload.leagueContestant)
         return state.leagueId === payload.leagueId ? { ...state, ...payload, fetched, fetching: !fetched } : state
     }
 
@@ -42,11 +42,11 @@ const leagueReducer = (state: LeagueReducerState = initialState, { type, payload
         case FETCH_LEAGUE_BEGIN:
             return { ...initialState, league: false, fetching: true, leagueId: payload.leagueId }
         case FETCH_LEAGUE_SUCCESS:
-            return addToState('league')
+            return updateState()
         case FETCH_LEAGUE_RESULTS_SUCCESS:
-            return addToState('leagueResult')
+            return updateState()
         case FETCH_LEAGUE_CONTESTANTS_SUCCESS:
-            return addToState('leagueContestant')
+            return updateState()
         case FETCH_LEAGUE_FAILURE:
         case FETCH_LEAGUE_RESULTS_FAILURE:
         case FETCH_LEAGUE_CONTESTANTS_FAILURE:
