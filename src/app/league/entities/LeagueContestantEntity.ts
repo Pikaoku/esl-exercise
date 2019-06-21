@@ -8,3 +8,5 @@ class LeagueContestantEntity {
         public region: string | null
     ) { }
 }
+
+export default LeagueContestantEntity

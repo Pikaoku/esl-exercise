@@ -1,8 +1,8 @@
-class LeagueResultParticipant {
+export class LeagueResultParticipant {
     constructor(
         public id: number,
         public place: number,
-        public point: number[]
+        public points: number[]
     ) { }
 }
 
