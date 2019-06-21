@@ -1,77 +1,98 @@
 import './LeagueResults.css'
 
-import React, { useEffect, useState } from 'react'
-import { Component, createRef, RefObject } from 'react'
+import * as React from 'react'
+import { ChangeEvent, useEffect, useState } from 'react'
+import { connect } from 'react-redux'
+import { LeagueReducerState } from 'src/store/league/leagueReducer'
 
 import { fetchLeague } from '../../../store/league/leagueActions'
+import LeagueResult from '../components/LeagueResult'
+import LeagueResultsTitle from '../components/LeagueResultsTitle'
+import LeagueContestantEntity from '../entities/LeagueContestantEntity'
 import LeagueEntity from '../entities/LeagueEntity'
-import LeagueResultEntity from '../entities/LeagueResultEntity'
+import LeagueResultEntity, { LeagueResultParticipant } from '../entities/LeagueResultEntity'
 
-, { }
 interface Props {
     fetchLeague: (id: number) => void,
     league: LeagueEntity | null,
-    leagueResult: LeagueResultEntity | null
-    leagueContestant: LeagueContestantEntity | null
+    leagueResults: LeagueResultEntity[]
+    leagueContestants: LeagueContestantEntity[]
+    fetched: boolean
 }
 
-// class LeagueResults extends Component<Props, State> {
-//     private leagueIdInput: RefObject<HTMLInputElement> = createRef<HTMLInputElement>();
-
-// }
-
-const LeagueResults = ({ league, leagueResult, leagueContestant, fetchLeague }: Props) => {
-    // Variables
-
+const LeagueResults: React.FC<Props> = ({ league, leagueResults, leagueContestants, fetched, fetchLeague: fetchLeagueAction }: Props) => {
     const [id, setId] = useState(177161)
     const [ascending, setAscending] = useState(true)
 
-    useEffect(() => fetchLeague(177161), [])
+    useEffect(() => fetchLeagueAction(177161), []) // Only do once for demo purposes
 
-    if (!league || !leagueResult || !leagueContestant) {
-        return (<div>Loading...</div>)
+    const GetLeague = () => (
+        <>
+            <input type="number" step="1" placeholder={'league id'} value={id} onChange={onIdChange} />
+            <button onClick={onFetchLeague}>retrieve league</button>
+        </>
+    )
+
+    if (league === null || leagueResults.length === 0 || leagueContestants.length === 0) {
+        return (
+            <div className="lr-frame">
+                <div><GetLeague /></div>
+                {
+                    fetched === true
+                        ? (<div>The requested league did not provide enough information to dispaly.</div>)
+                        : (<div>Loading... </div>)
+                }
+
+            </div>
+        )
     }
 
     // Prepare data for display
-    const title: string = league.name.short;
-    const dateRaw: Date = new Date(league.timeline.inProgress.begin)
-    const dateOptions = { day: 'numeric', month: 'long', year: 'numeric' }
-    const date: string = dateRaw.toLocaleDateString('en-us', dateOptions)
+    const title: string = league.name ? league.name.short : 'Undefined League Title';
+    const date: Date = league.timeline ? new Date(league.timeline.inProgress.begin) : new Date()
+    const onIdChange = (event: ChangeEvent<HTMLInputElement>) => setId(parseInt(event.target.value, 10))
     const flipAscending = () => setAscending(!ascending)
-    
+    const onFetchLeague = () => fetchLeagueAction(id)
     // Used to sort results before iterating upon the array
-    const getTime = (input: string): number => (new Date(input)).getTime()
+    const getTime = (dateString: string): number => (new Date(dateString)).getTime()
     const sortByTime =
-        (x: any, y: any): number =>
-            ascending ? getTime(x.beginAt) - getTime(y.beginAt) : getTime(y.beginAt) - getTime(x.beginAt)
+        (x: LeagueResultEntity, y: LeagueResultEntity): number => ascending ? getTime(x.beginAt) - getTime(y.beginAt) : getTime(y.beginAt) - getTime(x.beginAt)
 
     // Handle more complicated data for display
     const displayLeagueResult = (result: LeagueResultEntity) => {
         // Winner first, loser second. 
-        const sortedParticipants: any[] = result.participants.sort((x: any, y: any) => x.place - y.place);
-        const time: string =
-            (new Date(result.beginAt)).toLocaleTimeString('it', { hour: 'numeric', minute: 'numeric' })
-        const getParticipantName = (pid: number): string => league.contestants.find((x: any) => x.id === pid).name;
-        const getParticipantPoints = (participant: any): string => participant.points[0]
-        const winner: any = sortedParticipants[0];
-        const loser: any = sortedParticipants[1]
+        const sortedParticipants: LeagueResultParticipant[] =
+            result.participants
+                .sort((x: LeagueResultParticipant, y: LeagueResultParticipant) => x.place - y.place)
+        const [winnerParticipant, loserParticipant] = sortedParticipants
+
+        const [winnerContestant, loserContestant] = sortedParticipants.map((participant: LeagueResultParticipant) => {
+            // ESL API returns 0 for deleted participants
+            const currentContestant: LeagueContestantEntity | undefined =
+                participant.id === 0 ? new LeagueContestantEntity(0, 0, '', '', 'Deleted contestant', null) : leagueContestants.find(contestant => contestant.id === participant.id)
+            if (currentContestant === undefined) {
+                throw new Error('Ill defined response from API')
+            }
+            return currentContestant
+        })
+
+        const time: string = (new Date(result.beginAt)).toLocaleTimeString('it', { hour: 'numeric', minute: 'numeric' })
 
         return (
             <LeagueResult
                 key={result.id}
                 time={time}
-                winner={getParticipantName(winner.id)}
-                winnerScore={getParticipantPoints(winner)}
-                loser={getParticipantName(loser.id)}
-                loserScore={getParticipantPoints(loser)}
+                winner={winnerContestant.name}
+                winnerScore={winnerParticipant.points ? winnerParticipant.points[0] : -1} // Some leads have null points
+                loser={loserContestant.name}
+                loserScore={loserParticipant.points ? loserParticipant.points[0] : -1}
             />
         )
     }
 
     return (
         <div className="lr-frame">
-            <input ref={this.leagueIdInput} type="text" placeholder={'league id'} />
-            <button onClick={this.changeLeague}>retrieve league</button>
+            <GetLeague />
             <LeagueResultsTitle title={title} date={date} />
             <div className="lr-results-container">
                 <div className="lr-button-wrapper">
@@ -79,11 +100,7 @@ const LeagueResults = ({ league, leagueResult, leagueContestant, fetchLeague }: 
                         Date <div className={"arrow " + (ascending ? 'ascending' : '')} />
                     </button>
                 </div>
-                {
-                    league.results.length > 0 && league.contestants.length > 0
-                        ? league.results.sort(sortByTime).map(displayLeagueResult)
-                        : <div className={'center-text'}>Results Loading...</div>
-                }
+                {leagueResults.sort(sortByTime).map(displayLeagueResult)}
             </div>
         </div>
     );
