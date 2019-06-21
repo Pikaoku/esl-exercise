@@ -1,14 +1,5 @@
 {
   "projects": {
-    "default": "esl-exercise"
-  },
-  "targets": {
-    "pikaoku-tools": {
-      "hosting": {
-        "esl-exercise": [
-          "esl-exercise"
-        ]
-      }
-    }
+    "default": "esl-exercise-1"
   }
 }
