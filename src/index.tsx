@@ -8,7 +8,6 @@ import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly'
 import thunk from 'redux-thunk'
 
 import App from './app/App'
-import registerServiceWorker from './registerServiceWorker'
 import reducer from './store/reducer'
 
 const store = createStore(
@@ -20,13 +19,11 @@ const store = createStore(
 
 const Index = () => (
     <Provider store={store}>
-        <App/>
+        <App />
     </Provider>
 );
 
 ReactDOM.render(
-    <Index/>,
+    <Index />,
     document.getElementById('root') as HTMLElement
 );
-
-registerServiceWorker();

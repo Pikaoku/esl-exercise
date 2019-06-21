@@ -24,19 +24,17 @@ const LeagueResults: React.FC<Props> = ({ league, leagueResults, leagueContestan
     const [id, setId] = useState(177161)
     const [ascending, setAscending] = useState(true)
 
-    useEffect(() => fetchLeagueAction(177161), []) // Only do once for demo purposes
+    useEffect(() => fetchLeagueAction(id), [id])
 
+    const onIdChange = (event: ChangeEvent<HTMLInputElement>) => setId(parseInt(event.target.value, 10))
     const GetLeague = () => (
-        <>
-            <input type="number" step="1" placeholder={'league id'} value={id} onChange={onIdChange} />
-            <button onClick={onFetchLeague}>retrieve league</button>
-        </>
+        <input type="number" step="1" placeholder={'league id'} onChange={onIdChange} value={id} style={{ lineHeight: '32px' }} />
     )
 
     if (league === null || leagueResults.length === 0 || leagueContestants.length === 0) {
         return (
             <div className="lr-frame">
-                <div><GetLeague /></div>
+                <div><GetLeague key='id-input' /></div>
                 {
                     fetched === true
                         ? (<div>The requested league did not provide enough information to dispaly.</div>)
@@ -50,9 +48,7 @@ const LeagueResults: React.FC<Props> = ({ league, leagueResults, leagueContestan
     // Prepare data for display
     const title: string = league.name ? league.name.short : 'Undefined League Title';
     const date: Date = league.timeline ? new Date(league.timeline.inProgress.begin) : new Date()
-    const onIdChange = (event: ChangeEvent<HTMLInputElement>) => setId(parseInt(event.target.value, 10))
     const flipAscending = () => setAscending(!ascending)
-    const onFetchLeague = () => fetchLeagueAction(id)
     // Used to sort results before iterating upon the array
     const getTime = (dateString: string): number => (new Date(dateString)).getTime()
     const sortByTime =
@@ -92,7 +88,7 @@ const LeagueResults: React.FC<Props> = ({ league, leagueResults, leagueContestan
 
     return (
         <div className="lr-frame">
-            <GetLeague />
+            <GetLeague key='id-input' />
             <LeagueResultsTitle title={title} date={date} />
             <div className="lr-results-container">
                 <div className="lr-button-wrapper">
