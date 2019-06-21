@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { Dispatch } from 'redux'
+import { Dispatch } from 'react'
 
 import {
     ESL_API_LEAGUES,
@@ -24,16 +24,16 @@ const leaguesApi = axios.create({
 });
 
 export function fetchLeague(id: number) {
-    return (dispatch: Dispatch) => {
-        dispatch<LeagueReducerAction>({ type: FETCH_LEAGUE_BEGIN, payload: { leagueId: id } });
-        getLeague(id)
-        getLeagueContestants(id)
-        getLeagueResults(id)
+    return (dispatch: Dispatch<LeagueReducerAction | any>) => {
+        dispatch({ type: FETCH_LEAGUE_BEGIN, payload: { leagueId: id } })
+        dispatch(getLeague(id))
+        dispatch(getLeagueContestants(id))
+        dispatch(getLeagueResults(id))
     }
 }
 
 function getLeague(id: number) {
-    getLeagueChild(
+    return getLeagueChild(
         id,
         'league',
         '',
@@ -43,7 +43,7 @@ function getLeague(id: number) {
 }
 
 function getLeagueResults(id: number) {
-    getLeagueChild(
+    return getLeagueChild(
         id,
         'leagueResults',
         ESL_API_LEAGUES_RESULTS,
@@ -53,7 +53,7 @@ function getLeagueResults(id: number) {
 }
 
 function getLeagueContestants(id: number) {
-    getLeagueChild(
+    return getLeagueChild(
         id,
         'leagueContestants',
         ESL_API_LEAGUES_CONTESTANTS,
@@ -62,8 +62,8 @@ function getLeagueContestants(id: number) {
     )
 }
 
-function getLeagueChild(id: number, field: string, endpoint: string, successType: string, failureType: string) {
-    return (dispatch: Dispatch) =>
+const getLeagueChild = (id: number, field: string, endpoint: string, successType: string, failureType: string) => {
+    return async (dispatch: Dispatch<LeagueReducerAction>) =>
         leaguesApi.get(id + endpoint)
             .then(
                 success => dispatch({

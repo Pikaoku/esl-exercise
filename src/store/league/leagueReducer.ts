@@ -1,3 +1,5 @@
+import LeagueContestantEntity from 'src/app/league/entities/LeagueContestantEntity'
+
 import {
     FETCH_LEAGUE_BEGIN,
     FETCH_LEAGUE_CONTESTANTS_FAILURE,
